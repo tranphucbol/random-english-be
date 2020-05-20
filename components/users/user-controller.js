@@ -31,7 +31,7 @@ router.post("/login", async (req, res) => {
             );
             return res.json({
                 status: 1,
-                data: { email, name, phoneNumber, token },
+                data: { email, name: user.name, numberPhone: numberPhone, token },
             });
         } else {
             return res
