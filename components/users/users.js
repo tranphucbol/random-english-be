@@ -12,14 +12,19 @@ User.init({
     allowNull: false
   },
   password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  name: {
     type: DataTypes.STRING
-    // allowNull defaults to true
+  },
+  numberPhone: {
+    type: DataTypes.STRING
   }
 }, {
-  // Other model options go here
   timestamps: false,
-  sequelize, // We need to pass the connection instance
-  modelName: 'users' // We need to choose the model name
+  sequelize,
+  modelName: 'users'
 });
 
 (async () => {

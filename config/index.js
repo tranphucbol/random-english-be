@@ -11,11 +11,11 @@ if (!envFound) {
 module.exports = {
     port: parseInt(process.env.PORT) || 3001,
     db: {
-        username: "usrunadmin",
-        password: "usrunadmin1620",
-        database: "random_english",
-        host: "128.199.159.72",
-        dialect: "mysql"
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        host: process.env.DB_HOST,
+        dialect: process.env.DB_DIALECT
     },
     tokenLife: parseInt(process.env.TOKEN_LIFE),
     tokenSecret: process.env.TOKEN_SECRET,
