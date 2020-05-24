@@ -7,42 +7,48 @@ const sequelize = new Sequelize(
   config.db
 );
 
-class User extends Model {}
+class Word extends Model {}
 
-User.init(
+Word.init(
   {
     // Model attributes are defined here
-    email: {
-      type: DataTypes.STRING,
-      primaryKey: true,
+    concept: {
+      type: DataTypes.STRING(512),
+      allowNull: false,
+      
+    },
+    eng: {
+      type: DataTypes.STRING(512),
       allowNull: false,
     },
-    password: {
-      type: DataTypes.STRING,
+    vie: {
+      type: DataTypes.STRING(512),
       allowNull: false,
     },
-    name: {
+    examples: {
+      type: DataTypes.STRING(2048),
+      get() {
+        return JSON.parse(this.getDataValue('examples'));
+      }
+    },
+    image: {
       type: DataTypes.STRING,
     },
-    numberPhone: {
-      type: DataTypes.STRING,
-    },
-    enabled: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: 0,
+    answers: {
+      type: DataTypes.STRING(2048),
     },
   },
   {
     timestamps: false,
     sequelize,
-    modelName: "users",
+    modelName: "words",
     charset: "utf8",
     collate: "utf8_general_ci",
   }
 );
 
 (async () => {
-  await User.sync();
+  await Word.sync();
 })();
 
-module.exports = User;
+module.exports = Word;
