@@ -9,7 +9,6 @@ const userVerifyToken = require("./user-verify-token");
 
 router.post("/login", async (req, res) => {
   let { email, password } = req.body;
-  console.log(email, password);
   try {
     let user = await User.findOne({
       where: {
@@ -22,12 +21,12 @@ router.post("/login", async (req, res) => {
         return res
           .status(400)
           .json({ status: 0, message: "Wrong email or password" });
-      const token = jwt.sign({ email, name: user.name }, config.tokenSecret, {
+      const token = jwt.sign({ userId: user.id, email, name: user.name }, config.tokenSecret, {
         expiresIn: config.tokenLife,
       });
       return res.json({
         status: 1,
-        data: { email, name: user.name, numberPhone: user.numberPhone, token },
+        data: { id: user.id, email, name: user.name, numberPhone: user.numberPhone, token },
       });
     } else {
       return res
@@ -53,13 +52,13 @@ router.post("/register", async (req, res) => {
       name: name,
       numberPhone: numberPhone,
     };
-    await User.create(user);
-    const token = jwt.sign({ email, name }, config.tokenSecret, {
+    let createdUser = await User.create(user);
+    const token = jwt.sign({id: createdUser.id, email, name }, config.tokenSecret, {
       expiresIn: config.tokenLife,
     });
     return res.json({
       status: 1,
-      data: { email, name, numberPhone, token },
+      data: { id: createdUser.id, email, name, numberPhone, token },
     });
   } catch (err) {
     console.error(err);
@@ -70,7 +69,7 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/profile", userVerifyToken, async (req, res) => {
-  const { email, name } = req.user;
+  const { email } = req.user;
   try {
     const user = await User.findOne({
       where: {
@@ -81,6 +80,7 @@ router.post("/profile", userVerifyToken, async (req, res) => {
       res.json({
         status: 1,
         data: {
+          id: user.id,
           email: user.email,
           name: user.name,
           numberPhone: user.numberPhone,

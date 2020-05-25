@@ -7,40 +7,32 @@ const sequelize = new Sequelize(
   config.db
 );
 
-class User extends Model {}
+class LearnedWord extends Model {}
 
-User.init(
+LearnedWord.init(
   {
-    email: {
-      type: DataTypes.STRING,
+    userId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
       allowNull: false,
     },
-    password: {
-      type: DataTypes.STRING,
+    wordId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,                     
       allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
-    },
-    numberPhone: {
-      type: DataTypes.STRING,
-    },
-    enabled: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: 0,
     },
   },
   {
     timestamps: false,
     sequelize,
-    modelName: "users",
+    modelName: "learned_words",
     charset: "utf8",
     collate: "utf8_general_ci",
   }
 );
 
 (async () => {
-  await User.sync();
+  await LearnedWord.sync();
 })();
 
-module.exports = User;
+module.exports = LearnedWord;

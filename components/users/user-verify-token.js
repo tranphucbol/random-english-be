@@ -12,7 +12,7 @@ const verifyToken = async (req, res, next) => {
     if (token) {
         try {
             const user = await jwt.verify(token, config.tokenSecret);
-            req.user = {email: user.email, name: user.name}
+            req.user = {userId: user.userId, email: user.email, name: user.name}
             next();
         } catch (err) {
             console.log(err);
