@@ -34,7 +34,7 @@ router.post("/random", async (req, res) => {
   }
 });
 
-router.post("/get/:wordId", async (req, res) => {
+router.post("/get/:wordId", userVerifyToken, async (req, res) => {
   try {
     let { wordId } = req.params;
     let { userId } = req.user;
