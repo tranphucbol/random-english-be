@@ -32,7 +32,7 @@ Word.init(
       }
     },
     image: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(512),
     },
     answers: {
       type: DataTypes.STRING(2048),
