@@ -5,7 +5,7 @@ const Word = require("./words");
 const LearnedWord = require("./learned-words");
 const { random } = require("../../utils");
 
-router.post("/random", async (req, res) => {
+router.post("/random", userVerifyToken, async (req, res) => {
   try {
     const { userId } = req.user;
     const count = await Word.count();
