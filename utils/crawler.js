@@ -1,6 +1,6 @@
 const axios = require("axios");
-const Word = require("./components/words/words");
-const { random, sleep } = require("./utils");
+const Word = require("../components/words/words");
+const { random, sleep } = require(".");
 
 (async () => {
   try {

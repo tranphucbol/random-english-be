@@ -36,6 +36,9 @@ Word.init(
     },
     answers: {
       type: DataTypes.STRING(2048),
+      get() {
+        return JSON.parse(this.getDataValue('answers'));
+      }
     },
   },
   {
