@@ -18,8 +18,11 @@ LearnedWord.init(
     },
     wordId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,                     
+      primaryKey: true,
       allowNull: false,
+    },
+    categoryId: {
+      type: DataTypes.INTEGER,
     },
   },
   {
@@ -30,9 +33,5 @@ LearnedWord.init(
     collate: "utf8_general_ci",
   }
 );
-
-(async () => {
-  await LearnedWord.sync();
-})();
 
 module.exports = LearnedWord;

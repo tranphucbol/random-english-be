@@ -7,36 +7,28 @@ const sequelize = new Sequelize(
   config.db
 );
 
-class User extends Model {}
+class UserCategory extends Model {}
 
-User.init(
+UserCategory.init(
   {
-    email: {
-      type: DataTypes.STRING,
+    userId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
       allowNull: false,
     },
-    password: {
-      type: DataTypes.STRING,
+    categoryId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
       allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
-    },
-    numberPhone: {
-      type: DataTypes.STRING,
-    },
-    enabled: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: 0,
     },
   },
   {
     timestamps: false,
     sequelize,
-    modelName: "users",
+    modelName: "user_categories",
     charset: "utf8",
     collate: "utf8_general_ci",
   }
 );
 
-module.exports = User;
+module.exports = UserCategory;

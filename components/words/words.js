@@ -40,6 +40,9 @@ Word.init(
         return JSON.parse(this.getDataValue('answers'));
       }
     },
+    categoryId: {
+      type: DataTypes.INTEGER
+    }
   },
   {
     timestamps: false,
@@ -49,9 +52,5 @@ Word.init(
     collate: "utf8_general_ci",
   }
 );
-
-(async () => {
-  await Word.sync();
-})();
 
 module.exports = Word;
