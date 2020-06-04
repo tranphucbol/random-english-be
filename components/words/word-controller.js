@@ -5,28 +5,23 @@ const Word = require("./words");
 const LearnedWord = require("./learned-words");
 const { random } = require("../../utils");
 
-router.post("/random", userVerifyToken, async (req, res) => {
+router.post("/random", async (req, res) => {
   try {
-    const { userId } = req.user;
-    const count = await Word.count();
-    let word;
-    do {
-      word = await Word.findOne({
-        where: {
-          id: random(1, count - 1),
-        },
-      });
-    } while (word === null);
+    const words = await Word.findAll();
+    const min = 0;
+    const max = words.length - 1;
+    let randomIndex = random(min, max);
 
-    let learnedWord = await LearnedWord.findOne({
-      where: {
-        userId,
-        wordId: word.id,
-      },
-    });
+    const word = words[randomIndex];
     res.json({
       status: 1,
-      data: { ...word.get(), learned: learnedWord !== null },
+      data: {
+        wordId: word.id,
+        question: word.vie,
+        answer: word.eng,
+        wrongAnswers: word.answers,
+        examples: word.examples
+      }
     });
   } catch (err) {
     console.log(err);
