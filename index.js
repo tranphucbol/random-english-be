@@ -36,7 +36,7 @@ app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(config.imageUrl, express.static(path.join(__dirname, config.imageDir)));
 
 app.use(`${config.api.prefix}/users`, userController);
 app.use(`${config.api.prefix}/words`, wordController);

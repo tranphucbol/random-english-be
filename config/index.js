@@ -22,4 +22,6 @@ module.exports = {
   api: {
     prefix: "/api",
   },
+  imageDir: process.env.IMAGE_DIR,
+  imageUrl: process.env.IMAGE_URL,
 };
