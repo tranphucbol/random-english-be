@@ -28,7 +28,7 @@ const storeImage = (name, data) => {
 const sendVerifyUserMail = async (email, token) => {
   const link = `${config.hostFe}/verify-mail?token=${token}`;
   const mailOptions = {
-    from: "usrun.hcmus@gmail.com",
+    from: config.mail.auth.user,
     to: email,
     subject: "Random English - Verify your mail ✔",
     text: `Welcome to Random English, Verify your email ✔ - ${link}`,
@@ -40,7 +40,7 @@ const sendVerifyUserMail = async (email, token) => {
 const sendResetPasswordMail = async(email, token) => {
   const link = `${config.hostFe}/reset-password?token=${token}`;
   const mailOptions = {
-    from: "usrun.hcmus@gmail.com",
+    from: config.mail.auth.user,
     to: email,
     subject: "Random English - Reset password ✔",
     text: `Reset password Random English, Reset password ✔ - ${link}`,

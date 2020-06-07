@@ -96,7 +96,11 @@ router.post("/get-all-words", userVerifyToken, async (req, res) => {
         {
           model: Category,
           where: { id: categoryId },
-          include: [{ model: Word }],
+          include: [
+            { model: User, attributes: ["id", "name", "email"]},
+            { model: Word },
+            { model: LearnedWord, attributes: ["wordId"] },
+          ],
         },
       ],
     });
@@ -106,7 +110,10 @@ router.post("/get-all-words", userVerifyToken, async (req, res) => {
     if (category === null) {
       res.status(400).json({ status: 0, message: "Category not found" });
     } else {
-      res.json({ status: 1, data: category });
+      const learnedWords = category.learned_words.map(learnedWord => learnedWord.wordId);
+      const words = category.words.map((word) => ({...word.get(), learned: learnedWords.includes(word.id)}))
+      const data = {id: category.id, name: category.name, user: category.user, words, public: category.public}
+      res.json({ status: 1, data: data });
     }
   } catch (err) {
     console.error(err);
