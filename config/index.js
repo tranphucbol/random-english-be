@@ -24,4 +24,16 @@ module.exports = {
   },
   imageDir: process.env.IMAGE_DIR,
   imageUrl: process.env.IMAGE_URL,
+  mail: {
+    host: process.env.MAIL_HOST,
+    port: parseInt(process.env.MAIL_PORT),
+    secure: false,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  },
+  tokenMailSecret: process.env.TOKEN_MAIL_SECRET,
+  tokenMailLife: parseInt(process.env.TOKEN_MAIL_LIFE),
+  host: process.env.HOST,
 };
