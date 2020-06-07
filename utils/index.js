@@ -26,7 +26,7 @@ const storeImage = (name, data) => {
 };
 
 const sendVerifyUserMail = async (email, token) => {
-  const link = `http://${config.host}/api/users/verify-mail/${token}`;
+  const link = `${config.hostFe}/verify-mail?token=${token}`;
   const mailOptions = {
     from: "usrun.hcmus@gmail.com",
     to: email,
@@ -37,4 +37,16 @@ const sendVerifyUserMail = async (email, token) => {
   await transporter.sendMail(mailOptions);
 };
 
-module.exports = { sleep, random, storeImage, notString, sendVerifyUserMail };
+const sendResetPasswordMail = async(email, token) => {
+  const link = `${config.hostFe}/reset-password?token=${token}`;
+  const mailOptions = {
+    from: "usrun.hcmus@gmail.com",
+    to: email,
+    subject: "Random English - Reset password ✔",
+    text: `Reset password Random English, Reset password ✔ - ${link}`,
+    html: `Reset password <b>Random English</b> <br/> <p> Click to <a href="${link}">Reset Password ✔</a></p>`
+  };
+  await transporter.sendMail(mailOptions);
+}
+
+module.exports = { sleep, random, storeImage, notString, sendVerifyUserMail, sendResetPasswordMail };

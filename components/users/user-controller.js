@@ -6,7 +6,7 @@ const User = require("./users");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const userVerifyToken = require("./user-verify-token");
-const { sendVerifyUserMail } = require("../../utils");
+const { sendVerifyUserMail, sendResetPasswordMail } = require("../../utils");
 
 router.post("/login", async (req, res) => {
   let { email, password } = req.body;
@@ -144,9 +144,9 @@ router.post("/resend-verify-user-mail", async (req, res) => {
   }
 });
 
-router.get("/verify-mail/:token", async (req, res) => {
+router.post("/verify-mail", async (req, res) => {
   try {
-    const { token } = req.params;
+    const { token } = req.body;
     const { email } = await jwt.verify(token, config.tokenMailSecret);
     const user = await User.findOne({ where: { email } });
     if (user === null) {
@@ -155,6 +155,69 @@ router.get("/verify-mail/:token", async (req, res) => {
       user.enabled = true;
       await user.save();
       res.json({ status: 1, message: "Verify successfully" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ status: 0, message: "Something went wrong" });
+  }
+});
+
+router.post("/change-password", userVerifyToken, async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const { userId } = req.user;
+    const user = await User.findOne({ where: { id: userId } });
+    const isExist = await bcrypt.compare(oldPassword, user.password);
+    if (!isExist) {
+      res
+        .status(400)
+        .json({ status: 0, message: "Old Password does not match" });
+    } else {
+      let hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+      user.password = hashedPassword;
+      await user.save();
+      res.json({ status: 1, message: "Changed password successfully" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ status: 0, message: "Something went wrong" });
+  }
+});
+
+router.post("/resend-reset-password-mail", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email } });
+    if (user === null) {
+      res.status(400).json({ status: 0, message: "User not found" });
+    } else {
+      const token = jwt.sign({ email }, config.tokenResetPasswordSecret, {
+        expiresIn: config.tokenResetPasswordLife,
+      });
+      await sendResetPasswordMail(email, token);
+      res.json({
+        status: 1,
+        message: "Send mail successfully, Please check your email",
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ status: 0, message: "Something went wrong" });
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    const { email } = await jwt.verify(token, config.tokenResetPasswordSecret);
+    const user = await User.findOne({ where: { email } });
+    if (user === null) {
+      res.status(400).json({ status: 0, message: "User not found" });
+    } else {
+      let hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+      user.password = hashedPassword;
+      await user.save();
+      res.json({ status: 1, message: "Reset password successfully" });
     }
   } catch (err) {
     console.error(err);

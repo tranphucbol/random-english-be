@@ -199,7 +199,7 @@ router.post("/create", userVerifyToken, async (req, res) => {
       }
 
       const name = `${new Date().getTime()}-${userId}-${categoryId}.${extensions}`;
-      image = `${config.imageUrl}/${name}`;
+      image = `${config.hostBe}${config.imageUrl}/${name}`;
       storeImage(name, parts[1]);
     }
 

@@ -9,6 +9,8 @@ if (!envFound) {
 }
 
 module.exports = {
+  hostBe: process.env.HOST_BACK_END,
+  hostFe: process.env.HOST_FRONT_END,
   port: parseInt(process.env.PORT) || 3001,
   db: {
     username: process.env.DB_USERNAME,
@@ -35,5 +37,6 @@ module.exports = {
   },
   tokenMailSecret: process.env.TOKEN_MAIL_SECRET,
   tokenMailLife: parseInt(process.env.TOKEN_MAIL_LIFE),
-  host: process.env.HOST,
+  tokenResetPasswordSecret: process.env.TOKEN_RESET_PASSWORD_SECRET,
+  tokenResetPasswordLife: parseInt(process.env.TOKEN_RESET_PASSWORD_LIFE),
 };
