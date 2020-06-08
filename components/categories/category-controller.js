@@ -75,7 +75,8 @@ router.post("/get-private", userVerifyToken, async (req, res) => {
       user: category.user,
       wordCount: category.words.length,
       learnedWordCount: category.learned_words.length,
-      public: category.public,
+      isPublic: category.public,
+      allowChangePrivacy: category.user.id === userId,
     }));
 
     res.json({ status: 1, data: categories });
@@ -97,7 +98,7 @@ router.post("/get-all-words", userVerifyToken, async (req, res) => {
           model: Category,
           where: { id: categoryId },
           include: [
-            { model: User, attributes: ["id", "name", "email"]},
+            { model: User, attributes: ["id", "name", "email"] },
             { model: Word },
             { model: LearnedWord, attributes: ["wordId"] },
           ],
@@ -110,9 +111,20 @@ router.post("/get-all-words", userVerifyToken, async (req, res) => {
     if (category === null) {
       res.status(400).json({ status: 0, message: "Category not found" });
     } else {
-      const learnedWords = category.learned_words.map(learnedWord => learnedWord.wordId);
-      const words = category.words.map((word) => ({...word.get(), learned: learnedWords.includes(word.id)}))
-      const data = {id: category.id, name: category.name, user: category.user, words, public: category.public}
+      const learnedWords = category.learned_words.map(
+        (learnedWord) => learnedWord.wordId
+      );
+      const words = category.words.map((word) => ({
+        ...word.get(),
+        learned: learnedWords.includes(word.id),
+      }));
+      const data = {
+        id: category.id,
+        name: category.name,
+        user: category.user,
+        words,
+        isPublic: category.public,
+      };
       res.json({ status: 1, data: data });
     }
   } catch (err) {
@@ -161,6 +173,36 @@ router.post(
     } catch (err) {
       console.error(err);
       res.json({ status: 0, message: "Something went wrong" });
+    }
+  }
+);
+
+router.post(
+  "/change-privacy/:categoryId",
+  userVerifyToken,
+  async (req, res) => {
+    {
+      try {
+        const { categoryId } = req.params;
+        const { userId } = req.user;
+        const category = await Category.findOne({ where: { id: categoryId } });
+        if (category === null) {
+          res.status(400).json({ status: 0, message: "Category not found" });
+        } else {
+          if (category.userId === userId) {
+            category.public = !category.public;
+            await category.save();
+            res.json({ status: 1, message: "Changed privacy successfully" });
+          } else {
+            res
+              .status(400)
+              .json({ status: 0, message: "Category does not belongs to you" });
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        res.json({ status: 0, message: "Something went wrong" });
+      }
     }
   }
 );
