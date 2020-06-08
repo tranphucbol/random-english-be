@@ -163,12 +163,17 @@ router.post("/create", userVerifyToken, async (req, res) => {
     }
 
     const category = await Category.findOne({
-      where: { id: categoryId, userId },
+      where: { id: categoryId },
     });
     if (category === null) {
       return res
         .status(400)
-        .json({ status: 0, message: "Category does not belongs to you" });
+        .json({ status: 0, message: "Category not found" });
+    } else {
+      if(category.userId !== userId && !category.public )
+      return res
+        .status(400)
+        .json({status: 0, message: "Category does not belongs to you"})
     }
 
     if (!notString(base64Image)) {

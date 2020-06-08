@@ -5,7 +5,7 @@ const { random, sleep } = require(".");
 (async () => {
   try {
     const dataRaw = {};
-    const loop = 10;
+    const loop = 5;
     for (let i = 0; i < loop; i++) {
       await sleep(random(2000, 10000));
       const res = await axios.get("http://hanaslexis.com/cards/api/get20");
@@ -20,6 +20,7 @@ const { random, sleep } = require(".");
         word.examples.map((ex) => ({ eng: ex.eng, vie: ex.vie }))
       ),
       image: word.image,
+      categoryId: 37
     }));
     await Word.bulkCreate(data);
   } catch (err) {
