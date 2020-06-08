@@ -63,18 +63,26 @@ router.post("/get-private", userVerifyToken, async (req, res) => {
           include: [
             { model: User, attributes: ["id", "name", "email"] },
             { model: Word, attributes: ["id"] },
-            { model: LearnedWord, attributes: ["wordId"] },
           ],
         },
       ],
     });
 
-    const categories = user.categories.map((category) => ({
+    // console.log(user.categories.map(category => category.get()));
+    // console.log(user.categories.map((category) =>category.learned_words.map(word => word.get())))
+
+    const learnedWordCounts = await Promise.all(
+      user.categories.map((category) =>
+        LearnedWord.count({ where: { userId, categoryId: category.id } })
+      )
+    );
+
+    const categories = user.categories.map((category, index) => ({
       id: category.id,
       name: category.name,
       user: category.user,
       wordCount: category.words.length,
-      learnedWordCount: category.learned_words.length,
+      learnedWordCount: learnedWordCounts[index],
       isPublic: category.public,
       allowChangePrivacy: category.user.id === userId,
     }));
@@ -111,9 +119,11 @@ router.post("/get-all-words", userVerifyToken, async (req, res) => {
     if (category === null) {
       res.status(400).json({ status: 0, message: "Category not found" });
     } else {
-      const learnedWords = category.learned_words.map(
-        (learnedWord) => learnedWord.wordId
-      );
+
+      const learnedWords = await LearnedWord.findAll({
+        where: { userId, categoryId },
+      });
+
       const words = category.words.map((word) => ({
         ...word.get(),
         learned: learnedWords.includes(word.id),
