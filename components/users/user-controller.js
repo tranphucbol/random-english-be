@@ -77,6 +77,16 @@ router.post("/register", async (req, res) => {
       }
     );
 
+    try {
+      const tokenEmail = jwt.sign({ email }, config.tokenMailSecret, {
+        expiresIn: config.tokenMailLife,
+      });
+      await sendVerifyUserMail(email, tokenEmail);
+    } catch (err) {
+      console.log(err);
+    }
+    
+
     return res.json({
       status: 1,
       data: { id: createdUser.id, email, name, numberPhone, token },
